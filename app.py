@@ -205,6 +205,88 @@ def generate_test_cases(feature_description, test_types, number_of_tests):
 
     return test_cases
 
+def generate_bug_report(bug_description):
+    text = bug_description.lower()
+
+    report = {
+        "id": "BUG-001",
+        "title": "Application behaves unexpectedly",
+        "severity": "Medium",
+        "priority": "Medium",
+        "environment": "Web Application",
+        "description": bug_description,
+        "steps": [
+            "Open the application.",
+            "Navigate to the affected feature.",
+            "Perform the action described in the bug.",
+            "Observe the application behavior."
+        ],
+        "expected": (
+            "The application should complete the requested action "
+            "without unexpected behavior."
+        ),
+        "actual": bug_description
+    }
+
+    # Login-related bug
+    if any(word in text for word in [
+        "login", "log in", "sign in", "password"
+    ]):
+
+        report["title"] = "Login functionality behaves unexpectedly"
+
+        report["steps"] = [
+            "Navigate to the login page.",
+            "Enter a valid email address.",
+            "Enter the password described in the issue.",
+            "Click the Login button.",
+            "Observe the application behavior."
+        ]
+
+        report["expected"] = (
+            "The application should process the login attempt "
+            "and display an appropriate result or error message."
+        )
+
+    # Detect freezing/crashing
+    if any(word in text for word in [
+        "freeze", "freezes", "crash", "crashes",
+        "unresponsive"
+    ]):
+
+        report["severity"] = "High"
+        report["priority"] = "High"
+
+        if "login" in text or "password" in text:
+            report["title"] = (
+                "Login page becomes unresponsive during login attempt"
+            )
+
+        report["actual"] = (
+            "The application becomes unresponsive while "
+            "performing the described action."
+        )
+
+    # Detect data loss
+    elif any(word in text for word in [
+        "data loss", "deleted", "lost data",
+        "missing data"
+    ]):
+
+        report["severity"] = "Critical"
+        report["priority"] = "High"
+
+    # Detect visual/UI issue
+    elif any(word in text for word in [
+        "alignment", "overlap", "color",
+        "font", "button looks", "layout"
+    ]):
+
+        report["severity"] = "Low"
+        report["priority"] = "Low"
+
+    return report
+
 st.set_page_config(
     page_title="AI Test Case Generator",
     page_icon="🧪",
@@ -332,12 +414,67 @@ generate_bug = st.button(
 if generate_bug:
 
     if not bug_description.strip():
+
         st.warning(
             "Please describe the bug before generating a report."
         )
 
     else:
-        st.success("Bug description received successfully!")
 
-        st.subheader("Reported Issue")
-        st.write(bug_description)
+        bug_report = generate_bug_report(
+            bug_description
+        )
+
+        st.success("Bug report generated successfully!")
+
+        st.divider()
+
+        st.header(
+            f"🐛 {bug_report['id']} — {bug_report['title']}"
+        )
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.metric(
+                "Severity",
+                bug_report["severity"]
+            )
+
+        with col2:
+            st.metric(
+                "Priority",
+                bug_report["priority"]
+            )
+
+        st.write(
+            f"**Environment:** {bug_report['environment']}"
+        )
+
+        st.subheader("Description")
+
+        st.write(
+            bug_report["description"]
+        )
+
+        st.subheader("Steps to Reproduce")
+
+        for step_number, step in enumerate(
+            bug_report["steps"],
+            start=1
+        ):
+            st.write(
+                f"{step_number}. {step}"
+            )
+
+        st.subheader("Expected Result")
+
+        st.write(
+            bug_report["expected"]
+        )
+
+        st.subheader("Actual Result")
+
+        st.write(
+            bug_report["actual"]
+        )
