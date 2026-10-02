@@ -1,71 +1,191 @@
 import streamlit as st
 
+def detect_feature_type(feature_description):
+    text = feature_description.lower()
+
+    if any(word in text for word in [
+        "login", "log in", "sign in", "password"
+    ]):
+        return "login"
+
+    if any(word in text for word in [
+        "register", "registration", "sign up", "create account"
+    ]):
+        return "registration"
+
+    if any(word in text for word in [
+        "search", "search bar", "search box"
+    ]):
+        return "search"
+
+    if any(word in text for word in [
+        "checkout", "cart", "payment", "purchase"
+    ]):
+        return "checkout"
+
+    if any(word in text for word in [
+        "form", "submit", "contact form"
+    ]):
+        return "form"
+
+    return "general"
+
 def generate_test_cases(feature_description, test_types, number_of_tests):
     test_cases = []
+    feature_type = detect_feature_type(feature_description)
 
-    templates = {
-        "Functional": {
-            "title": "Verify feature works with valid input",
-            "priority": "High",
-            "preconditions": "User has access to the feature.",
-            "steps": [
-                "Open the application.",
-                "Navigate to the feature.",
-                "Enter valid input.",
-                "Perform the primary action."
-            ],
-            "expected": "The feature completes successfully and displays the expected result."
-        },
+    if feature_type == "login":
 
-        "Negative": {
-            "title": "Verify feature handles invalid input",
-            "priority": "High",
-            "preconditions": "User has access to the feature.",
-            "steps": [
-                "Open the application.",
-                "Navigate to the feature.",
-                "Enter invalid input.",
-                "Attempt to continue."
-            ],
-            "expected": "The application rejects the invalid input and displays an appropriate error message."
-        },
-
-        "Boundary": {
-            "title": "Verify feature handles boundary values",
-            "priority": "Medium",
-            "preconditions": "User has access to the feature.",
-            "steps": [
-                "Navigate to the feature.",
-                "Enter a minimum or maximum allowed value.",
-                "Submit the input."
-            ],
-            "expected": "The application correctly handles the boundary value without unexpected behavior."
-        },
-
-        "Security": {
-            "title": "Verify feature handles potentially unsafe input",
-            "priority": "High",
-            "preconditions": "User has access to the feature.",
-            "steps": [
-                "Navigate to the feature.",
-                "Enter unexpected or potentially unsafe input.",
-                "Submit the request."
-            ],
-            "expected": "The application safely rejects or sanitizes the input without exposing sensitive information."
-        },
-
-        "Usability": {
-            "title": "Verify feature is clear and usable",
-            "priority": "Medium",
-            "preconditions": "Application is available.",
-            "steps": [
-                "Navigate to the feature.",
-                "Review labels and instructions.",
-                "Complete the normal user workflow."
-            ],
-            "expected": "The feature is understandable, responsive, and easy to use."
+        login_templates = {
+            "Functional": {
+                "title": "Verify login with valid credentials",
+                "priority": "High",
+                "preconditions": "A valid user account exists.",
+                "steps": [
+                    "Navigate to the login page.",
+                    "Enter a valid email address.",
+                    "Enter the correct password.",
+                    "Click the Login button."
+                ],
+                "expected": (
+                    "The user is successfully authenticated "
+                    "and redirected to the appropriate page."
+                )
+            },
+    
+            "Negative": {
+                "title": "Verify login with invalid credentials",
+                "priority": "High",
+                "preconditions": "The login page is available.",
+                "steps": [
+                    "Navigate to the login page.",
+                    "Enter a valid email address.",
+                    "Enter an incorrect password.",
+                    "Click the Login button."
+                ],
+                "expected": (
+                    "Login is rejected and an appropriate "
+                    "error message is displayed."
+                )
+            },
+    
+            "Boundary": {
+                "title": "Verify login fields handle boundary input",
+                "priority": "Medium",
+                "preconditions": "The login page is available.",
+                "steps": [
+                    "Navigate to the login page.",
+                    "Enter an extremely long email address.",
+                    "Enter an extremely long password.",
+                    "Click the Login button."
+                ],
+                "expected": (
+                    "The application handles the input safely "
+                    "without crashing or unexpected behavior."
+                )
+            },
+    
+            "Security": {
+                "title": "Verify login rejects suspicious input",
+                "priority": "High",
+                "preconditions": "The login page is available.",
+                "steps": [
+                    "Navigate to the login page.",
+                    "Enter unexpected characters in the email field.",
+                    "Enter unexpected characters in the password field.",
+                    "Click the Login button."
+                ],
+                "expected": (
+                    "The application safely handles the input "
+                    "without exposing sensitive information."
+                )
+            },
+    
+            "Usability": {
+                "title": "Verify login page usability",
+                "priority": "Medium",
+                "preconditions": "The login page is available.",
+                "steps": [
+                    "Navigate to the login page.",
+                    "Verify the email and password fields are clearly labeled.",
+                    "Verify the Login button is visible.",
+                    "Verify the Forgot Password link is accessible.",
+                    "Verify the Remember Me option is understandable."
+                ],
+                "expected": (
+                    "All login controls are clearly labeled, "
+                    "accessible, and easy to understand."
+                )
+            }
         }
-    }
+    
+        templates = login_templates
+    
+    else:
+    
+        templates = {
+            "Functional": {
+                "title": "Verify feature works with valid input",
+                "priority": "High",
+                "preconditions": "User has access to the feature.",
+                "steps": [
+                    "Open the application.",
+                    "Navigate to the feature.",
+                    "Enter valid input.",
+                    "Perform the primary action."
+                ],
+                "expected": "The feature completes successfully and displays the expected result."
+            },
+    
+            "Negative": {
+                "title": "Verify feature handles invalid input",
+                "priority": "High",
+                "preconditions": "User has access to the feature.",
+                "steps": [
+                    "Open the application.",
+                    "Navigate to the feature.",
+                    "Enter invalid input.",
+                    "Attempt to continue."
+                ],
+                "expected": "The application rejects the invalid input and displays an appropriate error message."
+            },
+    
+            "Boundary": {
+                "title": "Verify feature handles boundary values",
+                "priority": "Medium",
+                "preconditions": "User has access to the feature.",
+                "steps": [
+                    "Navigate to the feature.",
+                    "Enter a minimum or maximum allowed value.",
+                    "Submit the input."
+                ],
+                "expected": "The application correctly handles the boundary value without unexpected behavior."
+            },
+    
+            "Security": {
+                "title": "Verify feature handles potentially unsafe input",
+                "priority": "High",
+                "preconditions": "User has access to the feature.",
+                "steps": [
+                    "Navigate to the feature.",
+                    "Enter unexpected or potentially unsafe input.",
+                    "Submit the request."
+                ],
+                "expected": "The application safely rejects or sanitizes the input without exposing sensitive information."
+            },
+    
+            "Usability": {
+                "title": "Verify feature is clear and usable",
+                "priority": "Medium",
+                "preconditions": "Application is available.",
+                "steps": [
+                    "Navigate to the feature.",
+                    "Review labels and instructions.",
+                    "Complete the normal user workflow."
+                ],
+                "expected": "The feature is understandable, responsive, and easy to use."
+            }
+        }
 
     for i in range(number_of_tests):
         test_type = test_types[i % len(test_types)]
