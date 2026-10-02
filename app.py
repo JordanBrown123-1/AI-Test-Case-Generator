@@ -1,5 +1,90 @@
 import streamlit as st
 
+def generate_test_cases(feature_description, test_types, number_of_tests):
+    test_cases = []
+
+    templates = {
+        "Functional": {
+            "title": "Verify feature works with valid input",
+            "priority": "High",
+            "preconditions": "User has access to the feature.",
+            "steps": [
+                "Open the application.",
+                "Navigate to the feature.",
+                "Enter valid input.",
+                "Perform the primary action."
+            ],
+            "expected": "The feature completes successfully and displays the expected result."
+        },
+
+        "Negative": {
+            "title": "Verify feature handles invalid input",
+            "priority": "High",
+            "preconditions": "User has access to the feature.",
+            "steps": [
+                "Open the application.",
+                "Navigate to the feature.",
+                "Enter invalid input.",
+                "Attempt to continue."
+            ],
+            "expected": "The application rejects the invalid input and displays an appropriate error message."
+        },
+
+        "Boundary": {
+            "title": "Verify feature handles boundary values",
+            "priority": "Medium",
+            "preconditions": "User has access to the feature.",
+            "steps": [
+                "Navigate to the feature.",
+                "Enter a minimum or maximum allowed value.",
+                "Submit the input."
+            ],
+            "expected": "The application correctly handles the boundary value without unexpected behavior."
+        },
+
+        "Security": {
+            "title": "Verify feature handles potentially unsafe input",
+            "priority": "High",
+            "preconditions": "User has access to the feature.",
+            "steps": [
+                "Navigate to the feature.",
+                "Enter unexpected or potentially unsafe input.",
+                "Submit the request."
+            ],
+            "expected": "The application safely rejects or sanitizes the input without exposing sensitive information."
+        },
+
+        "Usability": {
+            "title": "Verify feature is clear and usable",
+            "priority": "Medium",
+            "preconditions": "Application is available.",
+            "steps": [
+                "Navigate to the feature.",
+                "Review labels and instructions.",
+                "Complete the normal user workflow."
+            ],
+            "expected": "The feature is understandable, responsive, and easy to use."
+        }
+    }
+
+    for i in range(number_of_tests):
+        test_type = test_types[i % len(test_types)]
+        template = templates[test_type]
+
+        test_case = {
+            "id": f"TC-{i + 1:03}",
+            "title": template["title"],
+            "type": test_type,
+            "priority": template["priority"],
+            "preconditions": template["preconditions"],
+            "steps": template["steps"],
+            "expected": template["expected"]
+        }
+
+        test_cases.append(test_case)
+
+    return test_cases
+
 st.set_page_config(
     page_title="AI Test Case Generator",
     page_icon="🧪",
@@ -74,9 +159,37 @@ if generate_tests:
         for test in test_type:
             st.write(f"✅ {test}")
 
-        st.info(
-            f"Ready to generate {number_of_tests} test cases."
+        test_cases = generate_test_cases(
+            feature_description,
+            test_type,
+            number_of_tests
         )
+        
+        st.divider()
+        st.header("Generated Test Cases")
+        
+        for test_case in test_cases:
+        
+            with st.expander(
+                f"{test_case['id']} — {test_case['title']}"
+            ):
+                st.write(f"**Test Type:** {test_case['type']}")
+                st.write(f"**Priority:** {test_case['priority']}")
+                st.write(
+                    f"**Preconditions:** {test_case['preconditions']}"
+                )
+        
+                st.write("**Test Steps:**")
+        
+                for step_number, step in enumerate(
+                    test_case["steps"],
+                    start=1
+                ):
+                    st.write(f"{step_number}. {step}")
+        
+                st.write(
+                    f"**Expected Result:** {test_case['expected']}"
+                )
 
 st.divider()
 
