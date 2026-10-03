@@ -287,6 +287,75 @@ def generate_bug_report(bug_description):
 
     return report
 
+def generate_edge_cases(feature_description):
+    feature_type = detect_feature_type(feature_description)
+
+    edge_cases = {
+        "login": [
+            "Submit the login form with both fields empty.",
+            "Submit with an empty email address.",
+            "Submit with an empty password.",
+            "Enter an invalid email format.",
+            "Enter an extremely long email address.",
+            "Enter an extremely long password.",
+            "Use leading or trailing spaces in the email field.",
+            "Attempt multiple failed logins in a short period.",
+            "Use special characters in the input fields.",
+            "Attempt login after the user session has expired."
+        ],
+
+        "registration": [
+            "Submit all registration fields empty.",
+            "Enter an invalid email format.",
+            "Use an email address that already exists.",
+            "Enter mismatched password confirmation.",
+            "Enter the minimum allowed password length.",
+            "Enter an extremely long password.",
+            "Use special characters in name fields.",
+            "Submit the form multiple times rapidly."
+        ],
+
+        "search": [
+            "Search with an empty query.",
+            "Search using one character.",
+            "Search using an extremely long query.",
+            "Search using special characters.",
+            "Search using only spaces.",
+            "Search for an item that does not exist.",
+            "Submit multiple searches rapidly."
+        ],
+
+        "checkout": [
+            "Attempt checkout with an empty cart.",
+            "Use an expired payment method.",
+            "Enter invalid payment information.",
+            "Attempt payment twice rapidly.",
+            "Refresh the page during payment.",
+            "Lose network connectivity during checkout.",
+            "Attempt checkout when an item becomes unavailable."
+        ],
+
+        "form": [
+            "Submit the form with all fields empty.",
+            "Enter extremely long input.",
+            "Enter special characters.",
+            "Submit the form multiple times rapidly.",
+            "Enter invalid data formats.",
+            "Refresh the page while completing the form."
+        ],
+
+        "general": [
+            "Submit empty input.",
+            "Submit extremely long input.",
+            "Enter special characters.",
+            "Perform the action multiple times rapidly.",
+            "Refresh during the operation.",
+            "Lose network connectivity during the operation."
+        ]
+    }
+
+    return edge_cases[feature_type]
+
 st.set_page_config(
     page_title="AI Test Case Generator",
     page_icon="🧪",
@@ -392,6 +461,15 @@ if generate_tests:
                 st.write(
                     f"**Expected Result:** {test_case['expected']}"
                 )
+
+        st.subheader("⚠️ Additional Edge Cases")
+        
+        edge_cases = generate_edge_cases(
+            feature_description
+        )
+        
+        for edge_case in edge_cases:
+            st.write(f"• {edge_case}")
 
 st.divider()
 
