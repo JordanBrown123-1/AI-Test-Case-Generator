@@ -472,24 +472,33 @@ def create_bug_report_download(bug_report):
     report.append(bug_report["actual"])
 
     return "\n".join(report)
+
+
 st.set_page_config(
     page_title="AI Test Case Generator",
     page_icon="🧪",
     layout="centered"
 )
 
-st.title("🧪 AI Test Case & Bug Report Generator")
+st.title("🧪 Software Test Case & Bug Report Generator")
 
 st.write(
-    "Generate structured software test cases, edge cases, "
-    "and bug reports from application requirements."
+    "Generate structured software test cases, identify edge cases, "
+    "and create professional bug reports from software requirements."
+)
+
+st.caption(
+    "Built for QA, SDET, developers, and software testing workflows."
 )
 
 st.divider()
 
 # Feature requirements section
 st.header("Test Case Generator")
-
+st.write(
+    "Describe a software feature, select the types of testing you want, "
+    "and generate a structured test suite."
+)
 feature_description = st.text_area(
     "Describe the software feature",
     placeholder=(
@@ -510,6 +519,12 @@ test_type = st.multiselect(
     ],
     default=["Functional", "Negative"]
 )
+with st.expander("ℹ️ What do the test types mean?"):
+    st.write("**Functional:** Tests whether the feature works as intended.")
+    st.write("**Negative:** Tests invalid inputs and incorrect user actions.")
+    st.write("**Boundary:** Tests minimum, maximum, and extreme values.")
+    st.write("**Security:** Tests potentially unsafe or unexpected input.")
+    st.write("**Usability:** Tests clarity, accessibility, and ease of use.")
 
 number_of_tests = st.slider(
     "Number of test cases",
@@ -604,7 +619,10 @@ st.divider()
 
 # Bug report section
 st.header("Bug Report Generator")
-
+st.write(
+    "Describe unexpected software behavior to generate a structured "
+    "bug report with severity, priority, reproduction steps, and results."
+)
 bug_description = st.text_area(
     "Describe the bug",
     placeholder=(
