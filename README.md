@@ -8,7 +8,13 @@ A Python web application that generates structured software test cases, identifi
 
 ## 📸 Screenshot
 
-Add a screenshot of the application here.
+### Test Case Generator
+
+![Test Case Generator](test-case-generator.png)
+
+### Bug Report Generator
+
+![Bug Report Generator](bug-report-generator.png)
 
 ## ✨ Features
 
