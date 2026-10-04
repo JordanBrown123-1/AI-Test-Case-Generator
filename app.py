@@ -355,7 +355,73 @@ def generate_edge_cases(feature_description):
     }
 
     return edge_cases[feature_type]
+def create_test_report(
+    feature_description,
+    test_cases,
+    edge_cases
+):
+    report = []
 
+    report.append("AI TEST CASE GENERATOR")
+    report.append("=" * 50)
+    report.append("")
+
+    report.append("FEATURE REQUIREMENTS")
+    report.append("-" * 50)
+    report.append(feature_description)
+    report.append("")
+
+    report.append("GENERATED TEST CASES")
+    report.append("=" * 50)
+    report.append("")
+
+    for test_case in test_cases:
+
+        report.append(
+            f"{test_case['id']} - {test_case['title']}"
+        )
+        report.append("-" * 50)
+
+        report.append(
+            f"Test Type: {test_case['type']}"
+        )
+
+        report.append(
+            f"Priority: {test_case['priority']}"
+        )
+
+        report.append(
+            f"Preconditions: {test_case['preconditions']}"
+        )
+
+        report.append("")
+        report.append("Test Steps:")
+
+        for number, step in enumerate(
+            test_case["steps"],
+            start=1
+        ):
+            report.append(
+                f"{number}. {step}"
+            )
+
+        report.append("")
+        report.append(
+            f"Expected Result: {test_case['expected']}"
+        )
+
+        report.append("")
+        report.append("")
+
+    report.append("ADDITIONAL EDGE CASES")
+    report.append("=" * 50)
+
+    for edge_case in edge_cases:
+        report.append(
+            f"- {edge_case}"
+        )
+
+    return "\n".join(report)
 st.set_page_config(
     page_title="AI Test Case Generator",
     page_icon="🧪",
@@ -470,6 +536,19 @@ if generate_tests:
         
         for edge_case in edge_cases:
             st.write(f"• {edge_case}")
+            
+        test_report = create_test_report(
+            feature_description,
+            test_cases,
+            edge_cases
+        )
+        
+        st.download_button(
+            label="📥 Download Test Report",
+            data=test_report,
+            file_name="test_case_report.txt",
+            mime="text/plain"
+        )
 
 st.divider()
 
