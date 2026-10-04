@@ -422,6 +422,56 @@ def create_test_report(
         )
 
     return "\n".join(report)
+def create_bug_report_download(bug_report):
+    report = []
+
+    report.append("BUG REPORT")
+    report.append("=" * 50)
+    report.append("")
+
+    report.append(
+        f"{bug_report['id']} - {bug_report['title']}"
+    )
+    report.append("-" * 50)
+
+    report.append(
+        f"Severity: {bug_report['severity']}"
+    )
+
+    report.append(
+        f"Priority: {bug_report['priority']}"
+    )
+
+    report.append(
+        f"Environment: {bug_report['environment']}"
+    )
+
+    report.append("")
+    report.append("DESCRIPTION")
+    report.append("-" * 50)
+    report.append(bug_report["description"])
+
+    report.append("")
+    report.append("STEPS TO REPRODUCE")
+    report.append("-" * 50)
+
+    for number, step in enumerate(
+        bug_report["steps"],
+        start=1
+    ):
+        report.append(f"{number}. {step}")
+
+    report.append("")
+    report.append("EXPECTED RESULT")
+    report.append("-" * 50)
+    report.append(bug_report["expected"])
+
+    report.append("")
+    report.append("ACTUAL RESULT")
+    report.append("-" * 50)
+    report.append(bug_report["actual"])
+
+    return "\n".join(report)
 st.set_page_config(
     page_title="AI Test Case Generator",
     page_icon="🧪",
@@ -634,4 +684,16 @@ if generate_bug:
 
         st.write(
             bug_report["actual"]
+        )
+        st.divider()
+
+        bug_report_download = create_bug_report_download(
+            bug_report
+        )
+        
+        st.download_button(
+            label="📥 Download Bug Report",
+            data=bug_report_download,
+            file_name="bug_report.txt",
+            mime="text/plain"
         )
